@@ -10,7 +10,7 @@ Agent skills shared across all projects
 
 | Skill | Description |
 |---|---|
-| [to-prd](to-prd/SKILL.md) | Synthesize a repository PRD from settled design discussions, `CONTEXT.md`, or a feature idea. |
+| [to-spec](to-spec/SKILL.md) | Synthesize a repository spec from settled design discussions, `GLOSSARY.md`, or a feature idea. |
 | [loop-issue](loop-issue/SKILL.md) | Deliver one GitHub issue through a resumable plan → implement → verify → review → PR loop. |
 | [team-lead](team-lead/SKILL.md) | Plan bounded issues and independently review architecture, acceptance criteria, and evidence. |
 
@@ -18,17 +18,18 @@ Agent skills shared across all projects
 
 ## Projects
 
-| Skill | [chess](projects/chess) (Cloudflare Workers, Three.js) | [scos](projects/scos) (Hono, Prisma, PostgreSQL, AWS Lambda) |
+| Skill | [chess](projects/chess) (Cloudflare Workers, Three.js) | [resume](projects/resume) (SvelteKit, Workers static assets) |
 |---|---|---|
-| backend-developer | ✓ | ✓ |
+| backend-developer | ✓ | |
 | frontend-developer | ✓ | ✓ |
 | qa-engineer | ✓ | ✓ |
 | devops | ✓ | ✓ |
+| edit-resume | | ✓ |
 
 ## Install
 
 Copy or symlink a skill folder into a project's `.claude/skills/` (or `~/.claude/skills/` for all projects):
 
 ```bash
-ln -s "$PWD/to-prd" ~/.claude/skills/to-prd
+ln -s "$PWD/to-spec" ~/.claude/skills/to-spec
 ```
