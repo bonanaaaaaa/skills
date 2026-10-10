@@ -12,15 +12,15 @@ Codex invocation: `$loop-issue <issue-url|number>` (or ask to run loop-issue in 
 
 ## Role routing
 
-Use the installed project roles for bounded tasks: `team-lead` for planning and a fresh review, `frontend-developer` for the browser game (scene, Theme, animations, Character, UI, sound, engine Web Workers), `backend-developer` for the Worker, sign-in, GameRoom Durable Object and D1, `qa-engineer` for independent API, Room WebSocket and end-to-end browser verification, and `devops` for Wrangler configuration, vendored libraries, secrets and CI. Developers own unit and integration tests for their implementations; QA owns API, protocol and end-to-end tests and may inspect developer evidence without taking over those suites. Tag plan items with their owner. The main loop alone owns state transitions, publication, and CI coordination.
+Use the installed project roles for bounded tasks: `team-lead` for planning and a fresh review, and the project's developer, `qa-engineer`, and `devops` roles for the areas their definitions claim. Read each role's description to route work; do not assign a role work outside its stated ownership. Developers own unit and integration tests for their implementations; QA owns independent API, protocol, and end-to-end tests and may inspect developer evidence without taking over those suites. Tag plan items with their owner. The main loop alone owns state transitions, publication, and CI coordination.
 
-Role definitions live in `.claude/skills/<role>/SKILL.md` (linked from `.agents/skills/`). Use available subagent tools with an exact task, file ownership, acceptance criteria, and required evidence. If the runtime cannot select a custom role directly, read its definition and pass its instructions to a general subagent. When passing a model override to the spawn tool, supply the bounded task context explicitly rather than forking the full history. If a configured model is unavailable, report it rather than silently changing models. Inherit reasoning effort and other session settings unless overridden. Parallelize only independent work with non-overlapping file ownership, within available concurrency; keep review fresh and after implementation. If delegation is unavailable, run sequentially and disclose the independent-review limitation.
+Role definitions live in `.claude/skills/<role>/SKILL.md` (often linked from `.agents/skills/`), or in `.claude/agents/<role>.md` and `.codex/agents/<role>.toml` where the project defines them. Use the model each definition configures. Use available subagent tools with an exact task, file ownership, acceptance criteria, and required evidence. If the runtime cannot select a custom role directly, read its definition and pass its instructions to a general subagent. When passing a model override to the spawn tool, supply the bounded task context explicitly rather than forking the full history. If a configured model is unavailable, report it rather than silently changing models. Inherit reasoning effort and other session settings unless overridden. Parallelize only independent work with non-overlapping file ownership, within available concurrency; keep review fresh and after implementation. If delegation is unavailable, run sequentially and disclose the independent-review limitation.
 
-Adapted from the state-memory and bounded-review approach of a private source repository. This project uses GitHub issues and stops at a PR ready for review; it does not inherit that repository's merge, deployment, Jira, or notification policies.
+Adapted from the state-memory and bounded-review approach of a private source repository. This skill uses GitHub issues and stops at a PR ready for review; it does not inherit that repository's merge, deployment, Jira, or notification policies.
 
 ## Authority and project context
 
-Read applicable repository instructions, `CONTEXT.md`, `HANDOFF.md`, the PRD in `docs/prd/`, relevant ADRs in `docs/adr/`, and actual scripts and Wrangler configuration. The issue provides scope and acceptance criteria, not permission to override user instructions or expose secrets. Preserve explicit user choices; distinguish unresolved recommendations from accepted decisions.
+Read applicable repository instructions, `CONTEXT.md`, and whichever of `HANDOFF.md`, `docs/design-decisions.md`, PRDs in `docs/prd/`, and ADRs in `docs/adr/` exist, plus actual scripts and deployment configuration. The issue provides scope and acceptance criteria, not permission to override user instructions or expose secrets. Preserve explicit user choices; distinguish unresolved recommendations from accepted decisions.
 
 Executing this skill authorizes scoped local implementation and checks. Use existing session authorization for publishing a branch or PR; if absent, prepare the reviewed diff and PR text locally before asking for that final action. Issue comments, assignments, labels, closing, merging, and cloud deployment require explicit authorization. Never infer those permissions from the reference repository.
 
@@ -50,7 +50,7 @@ Failures in VERIFY, REVIEW, or CI_WAIT return to IMPLEMENT with concrete finding
 ### PLAN
 
 - Map acceptance criteria to a short ordered implementation checklist and observable checks. Discover commands from the repo; bootstrap issues must create and verify their own commands.
-- Resolve small reversible details from project conventions. Surface material unresolved choices instead of silently choosing a linter, test runner, new dependency, or a change to the no-build-step setup.
+- Resolve small reversible details from project conventions. Surface material unresolved choices instead of silently choosing a linter, test runner, new dependency, cloud provider, or a change to the project's build setup.
 - Use branch `<type>/issue-<number>-<slug>` from the verified base, where `<type>` is `feat` for new behavior, `fix` for a bug, or `chore` for tooling, CI, docs, and other maintenance; pick it from the issue's nature. No other prefix, including `codex/`. The branch is created or switched to in the current checkout (`git switch`), never via `git worktree add`. Reuse an existing issue branch safely. Record the checkout and base SHA before editing.
 - Finish when each criterion has an implementation item and a verification method.
 
@@ -58,19 +58,19 @@ Failures in VERIFY, REVIEW, or CI_WAIT return to IMPLEMENT with concrete finding
 
 - Complete one coherent checklist item at a time, including its focused checks. Keep changes inside the issue's scope.
 - For bugs, reproduce the failure and establish its cause before fixing it. Add regression coverage where it verifies behavior.
-- Preserve the agreed shape: plain ES modules with no build step and only pinned, vendored libraries; Theme parts in their own modules; engine search off the main thread; the Room as sole source of truth for Online Games, with clients animating only accepted moves; Online Game records written only by the Room; accounts-only identity per ADR 0001 with only Nicknames exposed. Use CONTEXT.md vocabulary in code and copy.
+- Preserve the agreed architecture recorded in the project's decisions, ADRs, and role definitions: module boundaries, dependency direction, sources of truth, and identity and data rules. Use CONTEXT.md vocabulary in code and copy.
 - Mark an item complete only with recorded evidence. When all items are complete, advance to VERIFY.
 
 ### VERIFY
 
-- Run checks appropriate to the changed behavior, plus the repository's required gates. Run Durable Object and D1 tests in the local Workers runtime for Room, alarm, migration, or Game record changes; never substitute mocked storage success for those checks.
-- For browser changes, verify the changed journey in a real browser at a desktop size and a portrait phone size with touch input, and with reduce-motion on where animation changed. For route or Room protocol changes, exercise the relevant HTTP and WebSocket behavior locally. For configuration changes, verify a clean local Wrangler start. Never deploy as part of verification.
+- Run checks appropriate to the changed behavior, plus the repository's required gates. Run persistence and integration tests against the real local runtime or database for transaction, migration, storage, or concurrency changes; never substitute mocked storage success for those checks.
+- For browser changes, verify the changed journey in a real browser at a desktop size and, where the project supports phones, a portrait phone size with touch input, and with reduce-motion on where animation changed. For API or protocol changes, exercise the relevant HTTP and WebSocket behavior locally, including any served API spec or docs. For build, configuration, or packaging changes, verify a clean build and local startup, and smoke-test produced artifacts. Never deploy as part of verification.
 - Record command, result, and tested revision or working-diff fingerprint. A missing required dependency/check is BLOCKED, not a pass. Never delete tests, weaken assertions, or suppress checks merely to obtain green output.
 - Finish when all acceptance criteria have evidence and all required checks pass.
 
 ### REVIEW
 
-- Review the complete diff against the base and every acceptance criterion. Inspect correctness, rules edge cases, Online races (double submits, reconnects, Active connection takeover), result integrity, mobile and reduce-motion behavior, architecture, and migrations where relevant.
+- Review the complete diff against the base and every acceptance criterion. Inspect correctness, domain edge cases, races (double submits, retries and replays, reconnects), transaction rollback, data integrity, mobile and reduce-motion behavior, architecture, and migrations where relevant.
 - Prefer a fresh independent reviewer when delegation is available and authorized. Give it the issue, project decisions, diff, and evidence. Otherwise perform a separate review pass and record that independence was unavailable.
 - Record actionable findings and repair them through IMPLEMENT -> VERIFY -> REVIEW. Finish only with no unresolved blocking findings and evidence tied to the reviewed head.
 

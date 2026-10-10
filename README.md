@@ -11,13 +11,15 @@ Agent skills shared across all projects
 | Skill | Description |
 |---|---|
 | [to-prd](to-prd/SKILL.md) | Synthesize a repository PRD from settled design discussions, `CONTEXT.md`, or a feature idea. |
+| [loop-issue](loop-issue/SKILL.md) | Deliver one GitHub issue through a resumable plan → implement → verify → review → PR loop. |
+| [team-lead](team-lead/SKILL.md) | Plan bounded issues and independently review architecture, acceptance criteria, and evidence. |
+
+`loop-issue` routes work to `team-lead` plus the project's own role skills below.
 
 ## Projects
 
 | Skill | [chess](projects/chess) (Cloudflare Workers, Three.js) | [scos](projects/scos) (Hono, Prisma, PostgreSQL, AWS Lambda) |
 |---|---|---|
-| loop-issue | ✓ | ✓ |
-| team-lead | ✓ | ✓ |
 | backend-developer | ✓ | ✓ |
 | frontend-developer | ✓ | ✓ |
 | qa-engineer | ✓ | ✓ |
