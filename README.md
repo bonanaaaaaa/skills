@@ -18,13 +18,14 @@ Agent skills shared across all projects
 
 ## Projects
 
-| Skill | [chess](projects/chess) (Cloudflare Workers, Three.js) | [resume](projects/resume) (SvelteKit, Workers static assets) |
-|---|---|---|
-| backend-developer | ✓ | |
-| frontend-developer | ✓ | ✓ |
-| qa-engineer | ✓ | ✓ |
-| devops | ✓ | ✓ |
-| edit-resume | | ✓ |
+| Skill | [resume](projects/resume) (SvelteKit, Workers static assets) |
+|---|---|
+| frontend-developer | ✓ |
+| qa-engineer | ✓ |
+| devops | ✓ |
+| edit-resume | ✓ |
+
+The chess role skills live in the chess repository itself (`.claude/skills/`), next to the code they describe.
 
 ## Install
 
