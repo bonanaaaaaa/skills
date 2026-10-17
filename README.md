@@ -13,6 +13,7 @@ Agent skills shared across all projects
 | [to-spec](to-spec/SKILL.md) | Synthesize a repository spec from settled design discussions, `GLOSSARY.md`, or a feature idea. |
 | [loop-issue](loop-issue/SKILL.md) | Deliver one GitHub issue through a resumable plan → implement → verify → review → PR loop. |
 | [team-lead](team-lead/SKILL.md) | Plan bounded issues and independently review architecture, acceptance criteria, and evidence. |
+| [correct](correct/SKILL.md) | Find mistakes agents keep repeating and make each one impossible with architecture, types, or checks before docs. |
 
 `loop-issue` routes work to `team-lead` plus the project's own role skills below.
 
