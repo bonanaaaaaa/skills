@@ -34,6 +34,8 @@ On every resume, read state, inspect the working tree, and reconcile GitHub issu
 
 Record an intended external action before performing it, then record its observed result. After interruption, query whether it already succeeded before retrying. Save evidence and history after every completed stage/item. Never mark a stage complete from a command launch alone.
 
+Write each phase's record into its own section of the state file, not only into History: criteria in Scope, checklist items in Plan, checks in Evidence, verdicts in Review findings. After every phase transition, and on resume, run `node scripts/check-state.mjs <state-file>` from this skill's folder. It checks that the file supports its recorded phase. A failing check means the phase was not reached: fill the missing record or move back to the phase that owns it. A state file from before this check, whose record lives only in History, gets its sections backfilled from History on resume.
+
 ## State machine
 
 `DISCOVER -> PLAN -> IMPLEMENT -> VERIFY -> REVIEW -> PUBLISH -> CI_WAIT -> READY`
@@ -52,7 +54,7 @@ Failures in VERIFY, REVIEW, or CI_WAIT return to IMPLEMENT with concrete finding
 - Map acceptance criteria to a short ordered implementation checklist and observable checks. Discover commands from the repo; bootstrap issues must create and verify their own commands.
 - Resolve small reversible details from project conventions. Surface material unresolved choices instead of silently choosing a linter, test runner, new dependency, cloud provider, or a change to the project's build setup.
 - Use branch `<type>/issue-<number>-<slug>` from the verified base, where `<type>` is `feat` for new behavior, `fix` for a bug, or `chore` for tooling, CI, docs, and other maintenance; pick it from the issue's nature. No other prefix, including `codex/`. The branch is created or switched to in the current checkout (`git switch`), never via `git worktree add`. Reuse an existing issue branch safely. Record the checkout and base SHA before editing.
-- Finish when each criterion has an implementation item and a verification method.
+- Finish when each criterion has an implementation item and a verification method, written as `- [ ] [role] item — verify: method` in Plan. An item dropped later stays in the list as `- [-] item — skipped: reason`.
 
 ### IMPLEMENT
 
@@ -65,7 +67,7 @@ Failures in VERIFY, REVIEW, or CI_WAIT return to IMPLEMENT with concrete finding
 
 - Run checks appropriate to the changed behavior, plus the repository's required gates. Run persistence and integration tests against the real local runtime or database for transaction, migration, storage, or concurrency changes; never substitute mocked storage success for those checks.
 - For browser changes, verify the changed journey in a real browser at a desktop size and, where the project supports phones, a portrait phone size with touch input, and with reduce-motion on where animation changed. For API or protocol changes, exercise the relevant HTTP and WebSocket behavior locally, including any served API spec or docs. For build, configuration, or packaging changes, verify a clean build and local startup, and smoke-test produced artifacts. Never deploy as part of verification.
-- Record command, result, and tested revision or working-diff fingerprint. A missing required dependency/check is BLOCKED, not a pass. Never delete tests, weaken assertions, or suppress checks merely to obtain green output.
+- Record command, result, and tested revision or working-diff fingerprint, and label each claim measured, inferred, or guessed. Name what was not verified. A missing required dependency/check is BLOCKED, not a pass. Never delete tests, weaken assertions, or suppress checks merely to obtain green output.
 - Finish when all acceptance criteria have evidence and all required checks pass.
 
 ### REVIEW

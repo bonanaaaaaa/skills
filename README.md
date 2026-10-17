@@ -14,7 +14,7 @@ Agent skills shared across all projects
 | [loop-issue](loop-issue/SKILL.md) | Deliver one GitHub issue through a resumable plan → implement → verify → review → PR loop. |
 | [team-lead](team-lead/SKILL.md) | Plan bounded issues and independently review architecture, acceptance criteria, and evidence. |
 
-`loop-issue` routes work to `team-lead` plus the project's own role skills below.
+`loop-issue` routes work to `team-lead` plus the project's own role skills below. Its `scripts/check-state.mjs` checks that an issue's state file supports its recorded phase; run the tests with `node --test`.
 
 ## Projects
 
